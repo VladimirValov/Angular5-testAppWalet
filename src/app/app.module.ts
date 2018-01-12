@@ -3,11 +3,13 @@ import { NgModule } from '@angular/core';
 
 
 import { AppComponent } from './app.component';
+import { WalletComponent } from './components/wallet/wallet.component';
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    WalletComponent
   ],
   imports: [
     BrowserModule
