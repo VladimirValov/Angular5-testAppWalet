@@ -1,3 +1,7 @@
-<p>
-  wallet works!
-</p>
+<div class="wallet-layout">
+  <div class="balance">{{balance.toFixed(2)}} ₽</div>
+  <div>
+    <input [(ngModel)]="amount" type="text" placeholder="input new balance">
+    <button (click)="updateBalance()">Обновить</button>
+  </div>
+</div>
