@@ -1,7 +1,23 @@
 <div class="wallet-layout">
   <div class="balance">{{balance.toFixed(2)}} ₽</div>
-  <div>
-    <input [(ngModel)]="amount" type="text" placeholder="input new balance">
-    <button (click)="updateBalance()">Обновить</button>
-  </div>
+  
+  <form (ngSubmit)="updateBalance(formDir)" [formGroup]="balanceForm" #formDir="ngForm">
+    <input  placeholder="input new balance" 
+      formControlName="newBalance"
+      type="number" step="0.01"
+      required
+    >
+    <button type="submit" [disabled]="timer || newBalance.invalid">Обновить</button>
+    <div class="erors-group">
+      <div *ngIf="newBalance.errors && newBalance.errors.required && newBalance.dirty" class="error">
+        New balance is required and must be a number
+      </div>
+      <div *ngIf="newBalance.errors && newBalance.errors.min && newBalance.dirty" class="error">
+        New balance must be more {{minBalance}} ₽
+      </div>
+      <div *ngIf="newBalance.errors && newBalance.errors.max && newBalance.dirty" class="error">
+        New balance must be less {{maxBalance}} ₽
+      </div>
+    </div>
+  </form>
 </div>

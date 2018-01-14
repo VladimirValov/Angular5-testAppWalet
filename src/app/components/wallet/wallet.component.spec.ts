@@ -1,15 +1,16 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { WalletComponent } from './wallet.component';
 
 describe('WalletComponent', () => {
   let component: WalletComponent;
   let fixture: ComponentFixture<WalletComponent>;
+  let compiled
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [FormsModule],
+      imports: [FormsModule, ReactiveFormsModule],
       declarations: [ WalletComponent ]
     })
     .compileComponents();
@@ -18,6 +19,7 @@ describe('WalletComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(WalletComponent);
     component = fixture.componentInstance;
+    compiled = fixture.debugElement.nativeElement;
     fixture.detectChanges();
   });
 
@@ -26,25 +28,16 @@ describe('WalletComponent', () => {
   });
 
   it('should render current balance in the div.balance element', async(() => {
-    const fixture = TestBed.createComponent(WalletComponent);
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('div.balance').textContent).toContain('429.29 ₽');
+    const div = compiled.querySelector('div.balance')
+    expect(div).toBeTruthy();
+    expect(div.textContent).toContain('429.29 ₽');
   }));
 
   it('should render input element', async(() => {
-    const fixture = TestBed.createComponent(WalletComponent);
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
     expect(compiled.querySelector('input')).toBeTruthy();
   }));
 
   it('should render new balance sync', async(() => {
-    const fixture = TestBed.createComponent(WalletComponent);
-    const component = fixture.componentInstance;
-    fixture.detectChanges();
-    
-    const compiled = fixture.debugElement.nativeElement;
     const div = compiled.querySelector('div.balance');
     expect(div.textContent).toContain('429.29 ₽');
     
@@ -54,21 +47,18 @@ describe('WalletComponent', () => {
   }));
 
   it('should render new balance async', async(() => {
-    const fixture = TestBed.createComponent(WalletComponent);
-    const component = fixture.componentInstance;
-    fixture.detectChanges();
-    
-    const compiled = fixture.debugElement.nativeElement;
     const div = compiled.querySelector('div.balance');
     expect(div.textContent).toContain('429.29 ₽');
-    
-    component.amount = 1000;
-    component.updateBalance().then(() => {
+
+    const form = { 
+      "value": {"newBalance": 1000},
+      resetForm: () => {}
+    }
+
+    component.updateBalance(form).then(() => {
       fixture.detectChanges();
       expect(div.textContent).toContain('1000.00 ₽');
     })
-    
   }));
-
 
 });

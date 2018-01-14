@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-// import { setInterval, clearInterval } from 'timers';
-
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-wallet',
@@ -8,30 +7,46 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./wallet.component.css']
 })
 export class WalletComponent implements OnInit {
-  public balance: number = 429.29;
-  public amount: number;
-
-  constructor() { }
+  public balance: number;
+  public timer: any;
+  public minBalance = 0;
+  public maxBalance = 1000000000;
+  
+  public balanceForm: FormGroup;
 
   ngOnInit() {
+    this.balance = 429.29;
+
+    this.balanceForm = new FormGroup({
+      "newBalance": new FormControl("", [
+        Validators.required,
+        Validators.min(this.minBalance),
+        Validators.max(this.maxBalance)
+      ])
+    }) 
   }
 
-  updateBalance(): Promise<any> {
-    this.amount = +this.amount;
+  get newBalance() { return this.balanceForm.get('newBalance'); }
+
+  updateBalance(form): Promise<any> {
+    const newBalance = +form.value.newBalance;
+    form.resetForm({});
+    
     return new Promise((resolve, reject) => {
-      if (typeof(this.amount) != "number")
-        return reject(null);
+      if (typeof(newBalance) != "number")
+        return reject();
 
-      let timer = setInterval(() => {
-        let delta = this.amount - this.balance;
-        this.balance = this.balance + delta / 20;
+      this.timer = setInterval(() => {
+        let delta = newBalance - this.balance;
+        this.balance = this.balance + delta / 4;
 
-        if ( Math.abs(delta) < 0.1) {
-          this.balance = this.amount;
-          clearInterval(timer);
+        if ( Math.abs(delta) < 0.5) {
+          this.balance = newBalance;
+          clearInterval(this.timer);
+          this.timer = null;
           resolve(this.balance);
         }
-      }, 50)
+      }, 20)
     });
   }
 }
