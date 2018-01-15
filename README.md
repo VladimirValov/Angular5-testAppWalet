@@ -1,5 +1,9 @@
 # AppWallet
 
+## install dependecies
+```
+npm install
+```
 ## dev server
 ```
 npm start
